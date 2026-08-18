@@ -22,6 +22,16 @@
             </div>
             
             <div class="nav-controls">
+                <!-- Interactive Language Selector in Nav -->
+                <div class="lang-selector-group" title="Select Conversation Language">
+                    <span class="lang-label">🌐 Language:</span>
+                    <div class="lang-pills" id="navLangPills">
+                        <button class="lang-pill active" data-lang="English">English</button>
+                        <button class="lang-pill" data-lang="Hindi">हिंदी</button>
+                        <button class="lang-pill" data-lang="Hinglish">Hinglish</button>
+                    </div>
+                </div>
+
                 <div class="status-badge" id="botStatusBadge">
                     <span class="status-dot online"></span>
                     <span id="botStatusText">Tara is Online</span>
@@ -71,10 +81,10 @@
                     </div>
                     <div class="banner-divider"></div>
                     <div class="banner-item">
-                        <span class="banner-label">Supported Languages</span>
-                        <span class="banner-badge">English</span>
-                        <span class="banner-badge">हिंदी</span>
-                        <span class="banner-badge">Hinglish</span>
+                        <span class="banner-label">Active Mode</span>
+                        <div class="banner-lang-display" id="bannerActiveLang">
+                            <span class="active-lang-badge" id="currentLangBadge">🇬🇧 English</span>
+                        </div>
                     </div>
                 </div>
 
@@ -84,7 +94,7 @@
                         <div class="avatar">T</div>
                         <div class="message-content-wrapper">
                             <div class="sender-name">Tara <span class="role-tag">Senior Property Advisor</span></div>
-                            <div class="message-bubble bot-bubble">
+                            <div class="message-bubble bot-bubble" id="initialGreetingBubble">
                                 Hello and welcome! I am Tara from Northstar Homes. We are showcasing Northstar One in Sector 79, Gurugram, featuring luxury 2 BHK apartments from ₹1.35 Crore and 3 BHK from ₹1.75 Crore with scenic Aravalli views. Are you looking for a 2 BHK or 3 BHK home?
                             </div>
                             <div class="message-meta">Just now • Spoken cadence ready</div>
@@ -103,18 +113,12 @@
                     <span class="typing-text">Tara is preparing response...</span>
                 </div>
 
-                <!-- Quick Prompt Suggestions -->
-                <div class="quick-prompts-bar">
+                <!-- Quick Prompt Suggestions (Dynamically updated based on active language) -->
+                <div class="quick-prompts-bar" id="quickPromptsBar">
                     <span class="prompts-heading">Quick Prompts:</span>
-                    <button class="chip" data-prompt="Hi, I am interested in a 3 BHK. What are the key details and pricing?">3 BHK Inquiry</button>
-                    <button class="chip" data-prompt="Price bahut zyada lag raha hai, Sector 79 ke hisaab se discount milega kya?">Hinglish Price Objection</button>
-                    <button class="chip" data-prompt="क्या Sector 79 बहुत दूर नहीं है? Cyber City से कनेक्टिविटी कैसी है?">Hindi Connectivity Query</button>
-                    <button class="chip" data-prompt="Can I book a site visit for this Sunday at 11:00 AM?">Book Site Visit (11 AM)</button>
-                    <button class="chip" data-prompt="I want to book a visit for Sunday at 2:00 PM.">Test Slot Full (2 PM)</button>
-                    <button class="chip" data-prompt="I am driving right now, please call me tomorrow evening.">Busy / Call Later</button>
-                    <button class="chip" data-prompt="Mujhe koi interest nahi hai, please call mat karna aur number delete kar do.">DND Opt-Out</button>
-                    <button class="chip" data-prompt="Do you have a 4 BHK penthouse with private swimming pool and 25% discount?">Out-of-Scope Query</button>
-                    <button class="chip" data-prompt="I want to speak directly with your Senior Sales Manager for pricing.">Human Escalation</button>
+                    <div class="prompts-chips-container" id="promptsChipsContainer">
+                        <!-- Loaded dynamically via JS -->
+                    </div>
                 </div>
 
                 <!-- Chat Input Controls -->
@@ -123,7 +127,7 @@
                         🔄
                     </button>
                     <div class="input-field-container">
-                        <input type="text" id="userInput" placeholder="Type a message in English, Hindi, or Hinglish..." autocomplete="off">
+                        <input type="text" id="userInput" placeholder="Type a message in English (e.g. Tell me about 3 BHK pricing)..." autocomplete="off">
                     </div>
                     <button class="btn btn-primary send-btn" id="sendBtn">
                         <span>Send</span>
@@ -187,7 +191,7 @@
                 <!-- Quick Prompt Architecture Summary -->
                 <div class="sidebar-card info-card">
                     <h4>🎙️ Voice & Spoken-Cadence Ready</h4>
-                    <p>Designed for telephony & chat. Zero asterisks/markdown, 1-3 sentences per turn, strictly anti-hallucination, seamless Hinglish mirroring.</p>
+                    <p>Designed for telephony & chat. Zero asterisks/markdown, 1-3 sentences per turn, strictly anti-hallucination, seamless multilingual code-switching.</p>
                 </div>
             </aside>
         </div>

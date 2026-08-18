@@ -15,17 +15,20 @@ class ChatRequest(BaseModel):
     session_id: Optional[str] = None
     message: str = Field(..., min_length=1, description="Customer message text")
     simulate_booking_failure: Optional[bool] = False
+    preferred_language: Optional[str] = Field("English", description="Selected language: English, Hindi, or Hinglish")
 
 class ChatResponse(BaseModel):
     session_id: str
     reply: str
     status: str
+    preferred_language: str
     tool_action: Optional[Dict[str, Any]] = None
     all_actions: List[Dict[str, Any]] = Field(default_factory=list)
     live_analytics: Optional[Dict[str, Any]] = None
 
 class ResetRequest(BaseModel):
     session_id: str
+    preferred_language: Optional[str] = "English"
 
 class ToggleFailureRequest(BaseModel):
     session_id: str
@@ -48,6 +51,8 @@ async def chat(request: ChatRequest):
     if request.simulate_booking_failure is not None:
         session.simulate_booking_failure = request.simulate_booking_failure
 
+    lang = request.preferred_language or "English"
+
     # Record user message in history
     session_manager.add_message(session.session_id, role="user", content=request.message)
 
@@ -60,7 +65,8 @@ async def chat(request: ChatRequest):
     # Generate reply & execute tools
     reply_text, tool_result, actions = llm_client.generate_chat_response(
         messages=llm_history,
-        tools_handler=tools_handler
+        tools_handler=tools_handler,
+        preferred_language=lang
     )
 
     # Record assistant message in history
@@ -84,11 +90,14 @@ async def chat(request: ChatRequest):
 
     # Generate live preview analytics
     live_analytics = analytics_service.extract_from_session(session)
+    if lang:
+        live_analytics["primary_language"] = lang
 
     return ChatResponse(
         session_id=session.session_id,
         reply=reply_text,
         status=session.status,
+        preferred_language=lang,
         tool_action=tool_result,
         all_actions=actions,
         live_analytics=live_analytics
@@ -98,7 +107,7 @@ async def chat(request: ChatRequest):
 async def reset_session(request: ResetRequest):
     """Clear session history and reset context."""
     session = session_manager.reset_session(request.session_id)
-    return {"message": "Session reset successfully", "session_id": session.session_id}
+    return {"message": "Session reset successfully", "session_id": session.session_id, "preferred_language": request.preferred_language or "English"}
 
 @router.post("/simulate-failure")
 async def toggle_failure(request: ToggleFailureRequest):
@@ -149,7 +158,7 @@ async def get_test_scenarios():
                 "title": "Hinglish Price Objection",
                 "category": "Objection Handling",
                 "language": "Hinglish",
-                "prompt": "Hi, 2 BHK ka price kya hai? ₹1.35 Cr thoda zyada lag raha hai Sector 79 ke hisaab se.",
+                "prompt": "Price bahut zyada lag raha hai, Sector 79 ke hisaab se discount milega kya?",
                 "expected": "Responds empathetically in Hinglish, highlights Aravalli views, premium build quality, and invites to see the show flat."
             },
             {

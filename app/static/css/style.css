@@ -100,7 +100,54 @@ body {
 .nav-controls {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 16px;
+}
+
+/* Language Selector Pills */
+.lang-selector-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(26, 38, 68, 0.6);
+    border: 1px solid var(--border-color);
+    padding: 4px 8px;
+    border-radius: 24px;
+}
+
+.lang-label {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.lang-pills {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.lang-pill {
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 16px;
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.lang-pill:hover {
+    color: var(--text-primary);
+    background-color: rgba(59, 130, 246, 0.15);
+}
+
+.lang-pill.active {
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    color: white;
+    border-color: rgba(59, 130, 246, 0.6);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.35);
 }
 
 .status-badge {
@@ -297,15 +344,16 @@ input:checked + .slider:before {
     background-color: var(--border-color);
 }
 
-.banner-badge {
+.active-lang-badge {
     display: inline-block;
-    padding: 2px 6px;
+    padding: 3px 8px;
     background-color: var(--bg-surface-elevated);
-    border-radius: 4px;
-    font-size: 0.72rem;
-    margin-right: 4px;
-    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: 1px solid var(--gold);
     color: var(--gold);
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.15);
 }
 
 /* Chat Messages */
@@ -489,6 +537,12 @@ input:checked + .slider:before {
     text-transform: uppercase;
 }
 
+.prompts-chips-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .chip {
     padding: 5px 12px;
     background-color: var(--bg-surface-elevated);
@@ -543,7 +597,7 @@ input:checked + .slider:before {
 
 /* ==========================================================================
    Sidebar: Live Intelligence & Scenarios
-   ========================================================================== */
+   ========================================================================= */
 .sidebar-section {
     width: 380px;
     background-color: var(--bg-surface);
@@ -938,6 +992,9 @@ input:checked + .slider:before {
         gap: 6px;
     }
     .banner-divider {
+        display: none;
+    }
+    .lang-selector-group {
         display: none;
     }
 }
