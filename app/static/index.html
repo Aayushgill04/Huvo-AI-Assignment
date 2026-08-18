@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Northstar One | AI Property Advisor (Tara)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation Bar -->
+        <header class="top-nav">
+            <div class="brand-section">
+                <div class="brand-logo-icon">⭐</div>
+                <div class="brand-text">
+                    <span class="brand-title">NORTHSTAR HOMES</span>
+                    <span class="project-subtitle">Northstar One • Sector 79, Gurugram</span>
+                </div>
+            </div>
+            
+            <div class="nav-controls">
+                <div class="status-badge" id="botStatusBadge">
+                    <span class="status-dot online"></span>
+                    <span id="botStatusText">Tara is Online</span>
+                </div>
+                
+                <div class="toggle-control voice-toggle-wrapper" title="Enable Voice Mode (Audio Speech Output)">
+                    <label class="switch">
+                        <input type="checkbox" id="voiceToggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="toggle-label"><span class="icon">🔊</span> Voice Audio (TTS)</span>
+                </div>
+
+                <div class="toggle-control failure-toggle-wrapper" title="Simulate Slot Full / Booking Failure Fallback">
+                    <label class="switch">
+                        <input type="checkbox" id="failureToggle">
+                        <span class="slider round slider-amber"></span>
+                    </label>
+                    <span class="toggle-label"><span class="icon">⚠️</span> Sim. Booking Failure</span>
+                </div>
+
+                <button class="btn btn-outline" id="endChatBtn">
+                    📊 End & Generate Analytics
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace Layout -->
+        <div class="main-layout">
+            <!-- Left: Conversational Chat Interface -->
+            <section class="chat-section">
+                <!-- Project Banner Strip -->
+                <div class="project-banner">
+                    <div class="banner-item">
+                        <span class="banner-label">Configurations</span>
+                        <span class="banner-val">2 & 3 BHK Luxury</span>
+                    </div>
+                    <div class="banner-divider"></div>
+                    <div class="banner-item">
+                        <span class="banner-label">Starting Price</span>
+                        <span class="banner-val">2 BHK: ₹1.35 Cr+ | 3 BHK: ₹1.75 Cr+</span>
+                    </div>
+                    <div class="banner-divider"></div>
+                    <div class="banner-item">
+                        <span class="banner-label">Location</span>
+                        <span class="banner-val">Sector 79, Gurugram (Near NH-48 & SPR)</span>
+                    </div>
+                    <div class="banner-divider"></div>
+                    <div class="banner-item">
+                        <span class="banner-label">Supported Languages</span>
+                        <span class="banner-badge">English</span>
+                        <span class="banner-badge">हिंदी</span>
+                        <span class="banner-badge">Hinglish</span>
+                    </div>
+                </div>
+
+                <!-- Chat History Messages Window -->
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message-group bot-group">
+                        <div class="avatar">T</div>
+                        <div class="message-content-wrapper">
+                            <div class="sender-name">Tara <span class="role-tag">Senior Property Advisor</span></div>
+                            <div class="message-bubble bot-bubble">
+                                Hello and welcome! I am Tara from Northstar Homes. We are showcasing Northstar One in Sector 79, Gurugram, featuring luxury 2 BHK apartments from ₹1.35 Crore and 3 BHK from ₹1.75 Crore with scenic Aravalli views. Are you looking for a 2 BHK or 3 BHK home?
+                            </div>
+                            <div class="message-meta">Just now • Spoken cadence ready</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Typing / Processing Indicator -->
+                <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                    <div class="avatar">T</div>
+                    <div class="typing-bubble">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    <span class="typing-text">Tara is preparing response...</span>
+                </div>
+
+                <!-- Quick Prompt Suggestions -->
+                <div class="quick-prompts-bar">
+                    <span class="prompts-heading">Quick Prompts:</span>
+                    <button class="chip" data-prompt="Hi, I am interested in a 3 BHK. What are the key details and pricing?">3 BHK Inquiry</button>
+                    <button class="chip" data-prompt="Price bahut zyada lag raha hai, Sector 79 ke hisaab se discount milega kya?">Hinglish Price Objection</button>
+                    <button class="chip" data-prompt="क्या Sector 79 बहुत दूर नहीं है? Cyber City से कनेक्टिविटी कैसी है?">Hindi Connectivity Query</button>
+                    <button class="chip" data-prompt="Can I book a site visit for this Sunday at 11:00 AM?">Book Site Visit (11 AM)</button>
+                    <button class="chip" data-prompt="I want to book a visit for Sunday at 2:00 PM.">Test Slot Full (2 PM)</button>
+                    <button class="chip" data-prompt="I am driving right now, please call me tomorrow evening.">Busy / Call Later</button>
+                    <button class="chip" data-prompt="Mujhe koi interest nahi hai, please call mat karna aur number delete kar do.">DND Opt-Out</button>
+                    <button class="chip" data-prompt="Do you have a 4 BHK penthouse with private swimming pool and 25% discount?">Out-of-Scope Query</button>
+                    <button class="chip" data-prompt="I want to speak directly with your Senior Sales Manager for pricing.">Human Escalation</button>
+                </div>
+
+                <!-- Chat Input Controls -->
+                <div class="chat-input-area">
+                    <button class="icon-btn" id="clearChatBtn" title="Reset Conversation">
+                        🔄
+                    </button>
+                    <div class="input-field-container">
+                        <input type="text" id="userInput" placeholder="Type a message in English, Hindi, or Hinglish..." autocomplete="off">
+                    </div>
+                    <button class="btn btn-primary send-btn" id="sendBtn">
+                        <span>Send</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Right Sidebar: Live Lead Qualification & Scenarios Drawer -->
+            <aside class="sidebar-section">
+                <!-- Live Lead Card -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3>⚡ Live Lead Qualification</h3>
+                        <span class="badge badge-neutral" id="liveLeadStatus">Warm</span>
+                    </div>
+                    <div class="lead-metrics-grid">
+                        <div class="metric-box">
+                            <div class="metric-label">Configuration</div>
+                            <div class="metric-value" id="metricConfig">Undecided</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">Budget Fit</div>
+                            <div class="metric-value" id="metricBudget">Not Disclosed</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">Site Visit</div>
+                            <div class="metric-value" id="metricSiteVisit">Not Discussed</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-label">Language</div>
+                            <div class="metric-value" id="metricLanguage">English</div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-alert" id="toolExecutionAlert" style="display: none;">
+                        <span class="alert-icon">⚡</span>
+                        <div class="alert-content">
+                            <strong id="toolActionTitle">Action Executed</strong>
+                            <p id="toolActionDetails">Details will appear here</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario Testing Library -->
+                <div class="sidebar-card">
+                    <div class="card-header">
+                        <h3>🧪 Evaluation Scenarios</h3>
+                    </div>
+                    <p class="card-description">
+                        Click below to simulate real customer situations across qualification, objections, code-switching, and edge cases.
+                    </p>
+                    <div class="scenario-list" id="scenariosContainer">
+                        <!-- Loaded dynamically via JS -->
+                    </div>
+                </div>
+
+                <!-- Quick Prompt Architecture Summary -->
+                <div class="sidebar-card info-card">
+                    <h4>🎙️ Voice & Spoken-Cadence Ready</h4>
+                    <p>Designed for telephony & chat. Zero asterisks/markdown, 1-3 sentences per turn, strictly anti-hallucination, seamless Hinglish mirroring.</p>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Post-Conversation Analytics Modal -->
+        <div class="modal-backdrop" id="analyticsModal" style="display: none;">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <div class="modal-title-group">
+                        <span class="modal-icon">📊</span>
+                        <div>
+                            <h2>Post-Conversation Lead Intelligence</h2>
+                            <p>Extracted structured CRM data and behavioral analytics</p>
+                        </div>
+                    </div>
+                    <button class="modal-close-btn" id="closeModalBtn">&times;</button>
+                </div>
+                
+                <div class="modal-body">
+                    <!-- Key KPI Summary -->
+                    <div class="analytics-kpi-row">
+                        <div class="kpi-card">
+                            <span class="kpi-label">Lead Qualification</span>
+                            <span class="kpi-val" id="modalLeadStatus">Hot</span>
+                        </div>
+                        <div class="kpi-card">
+                            <span class="kpi-label">Configuration</span>
+                            <span class="kpi-val" id="modalConfig">3 BHK</span>
+                        </div>
+                        <div class="kpi-card">
+                            <span class="kpi-label">Budget Range</span>
+                            <span class="kpi-val" id="modalBudget">₹1.75 Cr+</span>
+                        </div>
+                        <div class="kpi-card">
+                            <span class="kpi-label">Site Visit</span>
+                            <span class="kpi-val" id="modalSiteVisitStatus">Booked</span>
+                        </div>
+                    </div>
+
+                    <!-- Executive Summary -->
+                    <div class="summary-box">
+                        <h4>Executive Conversation Summary</h4>
+                        <p id="modalSummaryText">Customer expressed strong interest in 3 BHK and requested site visit.</p>
+                    </div>
+
+                    <!-- Detailed Breakdown Tables -->
+                    <div class="details-grid">
+                        <div class="detail-column">
+                            <h4>Lead Attributes</h4>
+                            <ul class="detail-list">
+                                <li><span>Interest Level:</span> <strong id="modalInterestLevel">High</strong></li>
+                                <li><span>Purchase Timeline:</span> <strong id="modalTimeline">1-3 months</strong></li>
+                                <li><span>Purpose:</span> <strong id="modalPurpose">End-use</strong></li>
+                                <li><span>Primary Language:</span> <strong id="modalLanguage">Hinglish</strong></li>
+                                <li><span>Sentiment:</span> <strong id="modalSentiment">Positive</strong></li>
+                                <li><span>Human Escalation:</span> <strong id="modalEscalation">No</strong></li>
+                            </ul>
+                        </div>
+                        <div class="detail-column">
+                            <h4>Follow-Up & Objections</h4>
+                            <ul class="detail-list">
+                                <li><span>Follow-Up Required:</span> <strong id="modalFollowupRequired">Yes</strong></li>
+                                <li><span>Follow-Up Channel:</span> <strong id="modalFollowupChannel">WhatsApp</strong></li>
+                                <li><span>Key Objections:</span> <strong id="modalObjections">None</strong></li>
+                                <li><span>Recommended Next Action:</span> <strong id="modalNextSteps">Send location map</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Raw JSON Viewer -->
+                    <div class="raw-json-section">
+                        <div class="json-header">
+                            <span>Raw JSON Output (For CRM Webhook / Database)</span>
+                            <button class="btn btn-sm btn-outline" id="copyJsonBtn">Copy JSON</button>
+                        </div>
+                        <pre id="rawJsonContent"><code>{}</code></pre>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-outline" id="modalCloseActionBtn">Close</button>
+                    <button class="btn btn-primary" id="downloadJsonBtn">📥 Download JSON</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
